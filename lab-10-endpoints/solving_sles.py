@@ -15,8 +15,8 @@ def measure_elapsed_time(action, *args):
 
 
 # A function to print SLE solutions:
-def print_solution(out, a, b, x):
-    out.out(f"SLE solution (A[{a.shape[0]}x{a.shape[1]}], b[{b.size}]): ")
+def print_solution(out, method, a, b, x):
+    out.out(f"<h3>SLE solution ({method}) (A[{a.shape[0]}x{a.shape[1]}], b[{b.size}]):</h3> ", end="")
     for n in range(x.size):
         out.out(f"x{n + 1} = {x[n]}")
     out.out()
@@ -70,9 +70,10 @@ def timesheet(out, n):
 
     min_size = 10
     max_size = n + min_size
+    out.out(f"<h3>Timesheet for matrix sizes {min_size}x{min_size} to {n}x{n}:</h3>", end="")
 
     tab = "        "
-    out.out(f"N    solve_numpy    solve_cramer    delta% (second/first)")
+    out.out(f"<b>N</b>    <b>solve_numpy</b>    <b>solve_cramer</b>    <b>delta% (second/first)</b>")
 
     # Compute the SLE solution for a randomly generated matrix A[NxN] and vector B[N]
     # using two methods defined above and measure execution time.
@@ -94,9 +95,8 @@ def solve_sle(coef_str, ord_str, n=250):
     out = Output()
     a = load_coef_matrix(coef_str)
     b = load_ordinate_vector(ord_str)
-    out.out(f"A:\n{a}\nB:\n{b}\n")
-    print_solution(out, a, b, solve_numpy(a, b))
-    print_solution(out, a, b, solve_cramer(a, b))
+    out.out(f"<h3>System matrix and ordinate vector:</h3>A:\n{a}\nB:\n{b}\n")
+    print_solution(out, "numpy.linalg.solve", a, b, solve_numpy(a, b))
+    print_solution(out, "Cramer's Method", a, b, solve_cramer(a, b))
     timesheet(out, n)
-    out.out("\nAs we can see, the built-in numpy.linalg.solve is much faster than our implementation of Cramer's rule. The bigger the matrix size, the slower our version gets, starting at 2.9x and up to 1006x slower in this case.")
     return out.get()
